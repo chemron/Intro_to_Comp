@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.13
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
@@ -11,6 +11,24 @@ macro bind(def, element)
         global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
         el
     end
+end
+
+# ╔═╡ 65780f00-ed6b-11ea-1ecf-8b35523a7ac0
+begin
+	import Pkg
+	Pkg.activate(mktempdir())
+end
+
+# ╔═╡ 74b008f6-ed6b-11ea-291f-b3791d6d1b35
+begin
+	Pkg.add(["Images", "ImageMagick"])
+	using Images
+end
+
+# ╔═╡ 6b30dc38-ed6b-11ea-10f3-ab3f121bf4b8
+begin
+	Pkg.add("PlutoUI")
+	using PlutoUI
 end
 
 # ╔═╡ 83eb9ca0-ed68-11ea-0bc5-99a09c68f867
@@ -32,7 +50,7 @@ Feel free to ask questions!
 # ╔═╡ 911ccbce-ed68-11ea-3606-0384e7580d7c
 # edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
 
-student = (name = "Jazzy Doe", kerberos_id = "jazz")
+student = (name = "Cameron Smith", kerberos_id = "Cam")
 
 # press the ▶ button in the bottom right of this cell to run your edits
 # or use Shift+Enter
@@ -48,24 +66,6 @@ Submission by: **_$(student.name)_** ($(student.kerberos_id)@mit.edu)
 
 # ╔═╡ 5f95e01a-ee0a-11ea-030c-9dba276aba92
 md"_Let's create a package environment:_"
-
-# ╔═╡ 65780f00-ed6b-11ea-1ecf-8b35523a7ac0
-begin
-	import Pkg
-	Pkg.activate(mktempdir())
-end
-
-# ╔═╡ 74b008f6-ed6b-11ea-291f-b3791d6d1b35
-begin
-	Pkg.add(["Images", "ImageMagick"])
-	using Images
-end
-
-# ╔═╡ 6b30dc38-ed6b-11ea-10f3-ab3f121bf4b8
-begin
-	Pkg.add("PlutoUI")
-	using PlutoUI
-end
 
 # ╔═╡ 67461396-ee0a-11ea-3679-f31d46baa9b4
 md"_We set up Images.jl again:_"
@@ -87,15 +87,19 @@ md"#### Exerise 1.1
 "
 
 # ╔═╡ f51333a6-eded-11ea-34e6-bfbb3a69bcb0
-random_vect = missing # replace this with your code!
+random_vect = rand(10)
+
+# ╔═╡ b529abef-e589-4e7f-a835-0d753d0b68cc
+
 
 # ╔═╡ cf738088-eded-11ea-2915-61735c2aa990
 md"👉 Make a function `mean` using a `for` loop, which computes the mean/average of a vector of numbers."
 
 # ╔═╡ 0ffa8354-edee-11ea-2883-9d5bfea4a236
 function mean(x)
-	
-	return missing
+	s = sum(x)
+	l = length(x)
+	return s/l
 end
 
 # ╔═╡ 1f104ce4-ee0e-11ea-2029-1d9c817175af
@@ -105,15 +109,14 @@ mean([1, 2, 3])
 md"👉 Define `m` to be the mean of `random_vect`."
 
 # ╔═╡ 2a391708-edee-11ea-124e-d14698171b68
-m = missing
+m = mean(random_vect)
 
 # ╔═╡ e2863d4c-edef-11ea-1d67-332ddca03cc4
 md"""👉 Write a function `demean`, which takes a vector `x` and subtracts the mean from each value in `x`."""
 
 # ╔═╡ ec5efe8c-edef-11ea-2c6f-afaaeb5bc50c
 function demean(x)
-	
-	return missing
+	return x .- mean(x)
 end
 
 # ╔═╡ 29e10640-edf0-11ea-0398-17dbf4242de3
@@ -144,8 +147,9 @@ md"""
 
 # ╔═╡ b6b65b94-edf0-11ea-3686-fbff0ff53d08
 function create_bar()
-	
-	return missing
+	v = zeros(100)
+	v[40:60] .= 1
+	return v
 end
 
 # ╔═╡ 22f28dae-edf2-11ea-25b5-11c369ae1253
@@ -157,8 +161,13 @@ md"""
 
 # ╔═╡ 8c19fb72-ed6c-11ea-2728-3fa9219eddc4
 function vecvec_to_matrix(vecvec)
-	
-	return missing
+	w = length(vecvec)
+	h = length(vecvec[1])
+	m = zeros(w, h)
+	for i=1:w, j=1:h
+		m[i, j] = vecvec[i][j]
+	end
+	return m
 end
 
 # ╔═╡ c4761a7e-edf2-11ea-1e75-118e73dadbed
@@ -1362,7 +1371,8 @@ with_sobel_edge_detect(sobel_camera_image)
 # ╠═56ced344-eded-11ea-3e81-3936e9ad5777
 # ╟─ad6a33b0-eded-11ea-324c-cfabfd658b56
 # ╠═f51333a6-eded-11ea-34e6-bfbb3a69bcb0
-# ╟─b18e2c54-edf1-11ea-0cbf-85946d64b6a2
+# ╠═b18e2c54-edf1-11ea-0cbf-85946d64b6a2
+# ╠═b529abef-e589-4e7f-a835-0d753d0b68cc
 # ╟─397941fc-edee-11ea-33f2-5d46c759fbf7
 # ╟─b1d5ca28-edf6-11ea-269e-75a9fb549f1d
 # ╟─cf738088-eded-11ea-2915-61735c2aa990
@@ -1380,7 +1390,7 @@ with_sobel_edge_detect(sobel_camera_image)
 # ╠═73ef1d50-edf0-11ea-343c-d71706874c82
 # ╟─a5f8bafe-edf0-11ea-0da3-3330861ae43a
 # ╠═b6b65b94-edf0-11ea-3686-fbff0ff53d08
-# ╟─d862fb16-edf1-11ea-36ec-615d521e6bc0
+# ╠═d862fb16-edf1-11ea-36ec-615d521e6bc0
 # ╟─e3394c8a-edf0-11ea-1bb8-619f7abb6881
 # ╟─22f28dae-edf2-11ea-25b5-11c369ae1253
 # ╠═8c19fb72-ed6c-11ea-2728-3fa9219eddc4

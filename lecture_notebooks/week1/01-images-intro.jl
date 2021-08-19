@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.12
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
@@ -11,6 +11,24 @@ macro bind(def, element)
         global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
         el
     end
+end
+
+# ╔═╡ de373816-ec79-11ea-2772-ebdca52246ac
+begin
+	import Pkg
+	Pkg.activate(mktempdir())
+end
+
+# ╔═╡ 552129ae-ebca-11ea-1fa1-3f9fa00a2601
+begin
+	Pkg.add(["Images", "ImageIO", "ImageMagick"])
+	using Images
+end
+
+# ╔═╡ fbe11200-e938-11ea-12e9-6125c1b56b25
+begin
+	Pkg.add("PlutoUI")
+	using PlutoUI
 end
 
 # ╔═╡ 5e688928-e939-11ea-0e16-fbc80af390ab
@@ -161,24 +179,6 @@ md"""## If in doubt: Ask Julia!
 - Let's use the `Images.jl` package to load an image and see what we get
 """
 
-# ╔═╡ de373816-ec79-11ea-2772-ebdca52246ac
-begin
-	import Pkg
-	Pkg.activate(mktempdir())
-end
-
-# ╔═╡ 552129ae-ebca-11ea-1fa1-3f9fa00a2601
-begin
-	Pkg.add(["Images", "ImageIO", "ImageMagick"])
-	using Images
-end
-
-# ╔═╡ fbe11200-e938-11ea-12e9-6125c1b56b25
-begin
-	Pkg.add("PlutoUI")
-	using PlutoUI
-end
-
 # ╔═╡ 54c1ba3c-e8d2-11ea-3564-bdaca8563738
 # defines a variable called `url`
 # whose value is a string (written inside `"`):
@@ -190,6 +190,15 @@ philip_file = download(url, "philip.jpg")  # download to a local file
 
 # ╔═╡ 9c359212-ec79-11ea-2d7e-0124dad5f127
 philip = load(philip_file)
+
+# ╔═╡ 9a843af8-e93c-11ea-311b-1bc6d5b58492
+grant = philip
+
+# ╔═╡ 6aa73286-ede7-11ea-232b-63e052222ecd
+[
+	grant             grant[:,end:-1:1]
+	grant[end:-1:1,:] grant[end:-1:1,end:-1:1]
+]
 
 # ╔═╡ 7703b032-ebca-11ea-3074-0b80a077078e
 philip
@@ -310,6 +319,9 @@ md"##"
  reverse(head, dims=1)  reverse(reverse(head, dims=1), dims=2)
 ]
 
+# ╔═╡ d9170d05-6dae-4450-8f36-64993c67a219
+RGB(0.4, 0.2, 1)
+
 # ╔═╡ bf3f9050-e933-11ea-0df7-e5dcff6bb3ee
 md"## Manipulating an image
 
@@ -411,6 +423,19 @@ md"## Transforming an image
 
 
 
+# ╔═╡ 03f8e978-2b09-4963-bf4c-3289b6625f50
+begin
+	function blur(d)
+		return 0.25*ones(d, d)
+	end
+end
+
+# ╔═╡ 28180647-0877-4337-b816-60aefdc7c7c2
+blur(3)
+
+# ╔═╡ 04ad9bd7-866c-4de9-8fda-1a5d63dd3a92
+test
+
 # ╔═╡ c12e0928-e93b-11ea-0922-2b590a99ee89
 md"##"
 
@@ -446,7 +471,13 @@ extract_red(c) = c.r
 decimate(image, ratio=5) = image[1:ratio:end, 1:ratio:end]
 
 # ╔═╡ 41fa85c0-e939-11ea-1ad8-79805a2083bb
-poor_phil = decimate(head, 5)
+poor_phil = decimate(head, 3)
+
+# ╔═╡ 47d4fd9b-2359-4965-ba44-f413a2e7e005
+size(poor_phil)
+
+# ╔═╡ 72526245-6be1-4c73-bea6-54bee035d7a2
+convolve(poor_phil, blur(2))
 
 # ╔═╡ cd5721d0-ede6-11ea-0918-1992c69bccc6
 repeat(poor_phil, repeat_count, repeat_count)
@@ -703,15 +734,6 @@ function process_raw_camera_data(raw_camera_data)
 	RGB.(reds, greens, blues)
 end
 
-# ╔═╡ 9a843af8-e93c-11ea-311b-1bc6d5b58492
-grant = decimate(process_raw_camera_data(raw_camera_data), 2)
-
-# ╔═╡ 6aa73286-ede7-11ea-232b-63e052222ecd
-[
-	grant             grant[:,end:-1:1]
-	grant[end:-1:1,:] grant[end:-1:1,end:-1:1]
-]
-
 # ╔═╡ Cell order:
 # ╟─a50b5f48-e8d5-11ea-1f05-a3741b5d15ba
 # ╟─8a6fed4c-e94b-11ea-1113-d56f56fb293b
@@ -770,6 +792,7 @@ grant = decimate(process_raw_camera_data(raw_camera_data), 2)
 # ╠═740ed2e2-e933-11ea-236c-f3c3f09d0f8b
 # ╟─6128a5ba-e93b-11ea-03f5-f170c7b90b25
 # ╠═78eafe4e-e933-11ea-3539-c13feb894ef6
+# ╠═d9170d05-6dae-4450-8f36-64993c67a219
 # ╟─bf3f9050-e933-11ea-0df7-e5dcff6bb3ee
 # ╟─212e1f12-e934-11ea-2f35-51c7a6c8dff1
 # ╠═117a98c0-e936-11ea-3aac-8f66337cea68
@@ -789,6 +812,11 @@ grant = decimate(process_raw_camera_data(raw_camera_data), 2)
 # ╠═3c32efde-e938-11ea-1ae4-5d88290f5311
 # ╟─4b26e4e6-e938-11ea-2635-6d4fc15e13b7
 # ╠═41fa85c0-e939-11ea-1ad8-79805a2083bb
+# ╠═47d4fd9b-2359-4965-ba44-f413a2e7e005
+# ╠═72526245-6be1-4c73-bea6-54bee035d7a2
+# ╠═03f8e978-2b09-4963-bf4c-3289b6625f50
+# ╠═28180647-0877-4337-b816-60aefdc7c7c2
+# ╠═04ad9bd7-866c-4de9-8fda-1a5d63dd3a92
 # ╟─c12e0928-e93b-11ea-0922-2b590a99ee89
 # ╟─ff5dc538-e938-11ea-058f-693d6b016640
 # ╠═fbe11200-e938-11ea-12e9-6125c1b56b25
